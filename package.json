@@ -1,18 +1,18 @@
 {
-  "name": "pkg-placeholder",
+  "name": "bg-alive",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "packageManager": "pnpm@9.1.1",
-  "description": "_description_",
+  "description": "🔄 Keep your background scripts running reliably in MV3 extensions.",
   "author": "leizhenpeng <laolei@forkway.cn>",
   "license": "MIT",
   "funding": "https://github.com/sponsors/leizhenpeng",
-  "homepage": "https://github.com/leizhenpeng/pkg-placeholder#readme",
+  "homepage": "https://github.com/leizhenpeng/bg-alive#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leizhenpeng/pkg-placeholder.git"
+    "url": "git+https://github.com/leizhenpeng/bg-alive.git"
   },
-  "bugs": "https://github.com/leizhenpeng/pkg-placeholder/issues",
+  "bugs": "https://github.com/leizhenpeng/bg-alive/issues",
   "keywords": [],
   "sideEffects": false,
   "exports": {
