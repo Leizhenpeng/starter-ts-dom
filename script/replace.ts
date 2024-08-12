@@ -13,11 +13,14 @@ const rl = createInterface({
   output: process.stdout,
 })
 
-// 定义要查找的占位符
-const placeholder = 'pkg-placeholder'
+// 定义两个占位符
+const placeholders = {
+  packageName: 'pkg-placeholder',
+  description: '_description_',
+}
 
 // 定义替换函数
-async function replaceInFiles(dir: string, packageName: string) {
+async function replaceInFiles(dir: string, replacements: { packageName: string, description: string }) {
   const files = fs.readdirSync(dir)
 
   for (const file of files) {
@@ -30,36 +33,50 @@ async function replaceInFiles(dir: string, packageName: string) {
     const stats = fs.statSync(filePath)
 
     if (stats.isDirectory()) {
-      await replaceInFiles(filePath, packageName) // 递归目录
+      await replaceInFiles(filePath, replacements) // 递归目录
     }
-    else if (stats.isFile() && filePath.endsWith('.ts')) { // 限制文件类型
+    else if (stats.isFile() && !filePath.endsWith('replace.ts')) { // 限制文件类型
       const content = fs.readFileSync(filePath, 'utf-8')
+      let updatedContent = content
 
-      // 检查是否包含关键词
-      if (content.includes(placeholder)) {
-        const updatedContent = content.replace(new RegExp(placeholder, 'g'), packageName)
+      // 检查并替换所有占位符
+      Object.entries(placeholders).forEach(([key, value]) => {
+        if (updatedContent.includes(value)) {
+          updatedContent = updatedContent.replace(new RegExp(value, 'g'), replacements[key])
+          consola.success(`文件 ${filePath} 中的 ${value} 已更新为 ${replacements[key]}`)
+        }
+      })
+
+      // 如果内容发生变化，则写回文件
+      if (updatedContent !== content)
         fs.writeFileSync(filePath, updatedContent, 'utf-8')
-        consola.success(`文件 ${filePath} 已更新`)
-      }
     }
   }
 }
 
 // 获取用户输入并执行替换
-rl.question('请输入新的包名: ', async (packageName) => {
+rl.question('请输入新的包名: ', (packageName) => {
   if (!packageName) {
     consola.error('未提供包名，脚本将退出。')
     rl.close()
     return
   }
 
-  try {
-    await replaceInFiles(path.resolve('.'), packageName) // 可以调整为你的项目根目录路径
-    consola.success('所有文件处理完成。')
-  }
-  catch (error) {
-    consola.error('处理时发生错误:', error)
-  }
+  rl.question('请输入新的描述: ', async (description) => {
+    if (!description) {
+      consola.error('未提供描述，脚本将退出。')
+      rl.close()
+      return
+    }
 
-  rl.close()
+    try {
+      await replaceInFiles(path.resolve('.'), { packageName, description })
+      consola.success('所有文件处理完成。')
+    }
+    catch (error) {
+      consola.error('处理时发生错误:', error)
+    }
+
+    rl.close()
+  })
 })
