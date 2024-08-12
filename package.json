@@ -46,7 +46,8 @@
     "test": "vitest",
     "play": "live-server --port=3000 --entry-file=playground/index.html",
     "typecheck": "tsc --noEmit",
-    "prepare": "simple-git-hooks"
+    "prepare": "simple-git-hooks",
+    "replace": "jiti script/replace.ts"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.18.1",
